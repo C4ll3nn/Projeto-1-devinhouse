@@ -1,0 +1,114 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(165, 197, 127);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+    background-color: rgb(82, 133, 24);
+    box-shadow: 4px 6px rgba(70, 73, 71, 0.35);
+    color: rgb(217, 232, 199);
+
+    margin: 10vh 0 0 0;
+    border-radius: 6px 6px 0 0;
+    padding: 8px;
+    width: 40vw;
+    min-width: 275px;
+    text-align: center;
+}
+
+button {
+    background-color: rgb(60, 111, 2);
+    color: rgb(217, 232, 199);
+    box-shadow: 1px 2px rgba(70, 73, 71, 0.35);
+    transition: transform .2s;
+
+    border: none;
+    padding: 3px 5px;
+    border-radius: 5px;
+    margin: 2px 8px;   
+}
+
+#botaoSalvar {
+    max-width: 5vw;
+    min-width: 52px;
+    padding: 8px;
+}
+
+button:hover {
+    transition: 1s;        
+
+    background-color: rgb(39, 71, 2);
+    color: rgb(217, 232, 199);
+}
+
+form {
+    background-color: rgb(108, 154, 51);
+    box-shadow: 4px 6px rgba(70, 73, 71, 0.35);
+
+    padding: 8px;     
+    width: 40vw;
+    min-width: 275px;
+    margin: 0;    
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;    
+}
+
+form label {    
+    text-align: center;
+    margin: 2px 8px;
+}
+
+form input {
+    max-width: 38vw;    
+}
+
+ul {
+    background-color: rgb(134, 176, 86);
+    box-shadow: 4px 6px rgba(70, 73, 71, 0.35);
+    
+    padding: 8px;
+    width: 40vw;
+    min-width: 275px;
+    margin-top: 0px;
+    border-radius: 0 0 6px 6px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;    
+}
+
+li {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+     
+    padding: 2px;
+    list-style-type: none;
+    margin: 2px 8px;
+    width: 38vw;
+    min-width: 250px;
+}
+
+.checkbox {
+    order: -1;
+}
+
+ul li input {
+    margin-right: 8px;
+}
+
+.realizada span {
+    text-decoration: line-through;
+}
+
+footer {
+    color: rgb(165, 197, 127);
+}
+
