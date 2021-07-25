@@ -11,8 +11,7 @@ var arrayStatus = [];
 inputAtividade.focus();
 
 //evita que o site recarregue quando ocorre o submit e executa a criação do novo item da lista
-entrada.addEventListener("submit", function() {
-    // event.preventDefault();  
+entrada.addEventListener("submit", function() {     
     adicionarAtividade(inputAtividade.value);
     salvarAtividades();
     salvarStatus(); 
@@ -101,7 +100,7 @@ function carregarStatus() {
         if(listaSalvaStatus[i] == 'realizada') {
             liArray[i].classList.add('realizada');
             liArray[i].classList.remove('pendente');
-            liArray[i].getElementsByTagName('input').checked = true;
+            liArray[i].querySelector('input').checked = true;
         }
     }
 }
