@@ -11,7 +11,8 @@ var arrayStatus = [];
 inputAtividade.focus();
 
 //evita que o site recarregue quando ocorre o submit e executa a criação do novo item da lista
-entrada.addEventListener("submit", function() {    
+entrada.addEventListener("submit", function() {
+    // event.preventDefault();  
     adicionarAtividade(inputAtividade.value);
     salvarAtividades();
     salvarStatus(); 
@@ -19,56 +20,60 @@ entrada.addEventListener("submit", function() {
 
 //carrega a lista de atividades salva no local storage
 carregarAtividades();
+carregarStatus();
 
 //função que adiciona um item à lista de atividades
 function adicionarAtividade(inputValue) {
 
     //checa de o input foi preenchido e gera o novo item da lista
     if (inputValue) {
-    var novaAtividade = document.createElement("li");
-    novaAtividade.className = "pendente";
-    
-    //cria o elemento do texto do item da lista e salva no array
-    var txtAtividade = document.createTextNode(inputValue);
-    var spanAtividade = document.createElement("span");  
-    
-    novaAtividade.appendChild(spanAtividade);
-    spanAtividade.appendChild(txtAtividade);
-    listaAtividades.appendChild(novaAtividade);
+        if (atividadesDaLista.includes(inputValue)){
+            alert("Atividade já presente na lista!");
+        } else {
+            var novaAtividade = document.createElement("li");
+            novaAtividade.className = "pendente";                     
 
-    atividadesDaLista.push(inputValue);
-    
-    //cria a checkbox do item da lista
-    var checkboxAtividade = document.createElement("input");
-        
-    checkboxAtividade.type = "checkbox";
-    checkboxAtividade.name = "checkbox";
-    checkboxAtividade.classList = "checkbox";
-    checkboxAtividade.title = "Marcar atividade como realizada";
+            //cria o elemento do texto do item da lista e salva no array
+            var txtAtividade = document.createTextNode(inputValue);
+            var spanAtividade = document.createElement("span");  
+            
+            novaAtividade.appendChild(spanAtividade);
+            spanAtividade.appendChild(txtAtividade);
+            listaAtividades.appendChild(novaAtividade);
 
-    novaAtividade.appendChild(checkboxAtividade);
+            atividadesDaLista.push(inputValue);
+            
+            //cria a checkbox do item da lista
+            var checkboxAtividade = document.createElement("input");
+                
+            checkboxAtividade.type = "checkbox";
+            checkboxAtividade.name = "checkbox";
+            checkboxAtividade.classList = "checkbox";
+            checkboxAtividade.title = "Marcar atividade como realizada";
 
-    arrayStatus.push(novaAtividade.className);
-    
-    //adiciona o botão de excluir ao item da lista
-    var botaoExcluir = document.createElement("button");
-    var txtExcluir = document.createTextNode("Excluir");    
-    
-    botaoExcluir.className = "excluir";
-    botaoExcluir.appendChild(txtExcluir);
-    novaAtividade.appendChild(botaoExcluir);
+            novaAtividade.appendChild(checkboxAtividade);
 
-    //"reseta" o campo de input
-    inputAtividade.value = "";
-    inputAtividade.focus();
-    
+            arrayStatus.push(novaAtividade.className);
+            
+            //adiciona o botão de excluir ao item da lista
+            var botaoExcluir = document.createElement("button");
+            var txtExcluir = document.createTextNode("Excluir");    
+            
+            botaoExcluir.className = "excluir";
+            botaoExcluir.appendChild(txtExcluir);
+            novaAtividade.appendChild(botaoExcluir);
+            
+            //"reseta" o campo de input
+            inputAtividade.value = "";
+            inputAtividade.focus();
+        }
     //notifica caso o input não tenha sido preenchido
     } else { 
         alert("Insira uma atividade!"); 
     }    
 }
 
-//função para salvar as listas no local storage
+//funções para salvar as listas no local storage
 function salvarAtividades() {    
     localStorage.setItem("listaAtividades", JSON.stringify(atividadesDaLista));
 }
@@ -77,14 +82,26 @@ function salvarStatus() {
     localStorage.setItem("listaStatusAtividades", JSON.stringify(arrayStatus));
 }
 
-//função para carregar a lista do local storage
+//função para carregar as listas do local storage
 function carregarAtividades() {
-    var listaSalva = JSON.parse(localStorage.getItem("listaAtividades"));
-    var listaSalvaStatus = JSON.parse(localStorage.getItem("listaStatusAtividades"));
+    var listaSalva = JSON.parse(localStorage.getItem("listaAtividades"));    
 
-        if(listaSalva){
+    if(listaSalva){
         for (var i = 0; i < listaSalva.length; i++) {
             adicionarAtividade(listaSalva[i]);
+        }
+    }
+}
+
+function carregarStatus() {
+    var listaSalvaStatus = JSON.parse(localStorage.getItem("listaStatusAtividades"));
+    var liArray = listaAtividades.getElementsByTagName("li");
+
+    for (var i = 0; i < listaSalvaStatus.length; i++) {
+        if(listaSalvaStatus[i] == 'realizada') {
+            liArray[i].classList.add('realizada');
+            liArray[i].classList.remove('pendente');
+            liArray[i].getElementsByTagName('input').checked = true;
         }
     }
 }
@@ -138,5 +155,6 @@ function toggleStatusItem() {
         arrayStatus.splice(indexStatus, 1, 'pendente');
     }
     salvarStatus();
+    
 }
 
