@@ -2,7 +2,10 @@
 var entrada = document.querySelector('#entrada');
 var inputAtividade = document.getElementById("inputAtividade");
 var listaAtividades = document.getElementById("listaAtividades");
-var checkbox = document.querySelector(".checkbox");
+
+//armazenamento de dados no local storage
+var atividadesDaLista = [];
+var arrayStatus = [];
 
 //deixa o campo de input em foco no primeiro carregamento da página
 inputAtividade.focus();
@@ -10,11 +13,9 @@ inputAtividade.focus();
 //evita que o site recarregue quando ocorre o submit e executa a criação do novo item da lista
 entrada.addEventListener("submit", function() {    
     adicionarAtividade(inputAtividade.value);
-    salvarAtividades();   
+    salvarAtividades();
+    salvarStatus(); 
 });
-
-//armazenamento da lista de atividades
-var atividadesDaLista = [];
 
 //carrega a lista de atividades salva no local storage
 carregarAtividades();
@@ -27,13 +28,15 @@ function adicionarAtividade(inputValue) {
     var novaAtividade = document.createElement("li");
     novaAtividade.className = "pendente";
     
-    //cria o elemento do texto do item da lsita
+    //cria o elemento do texto do item da lista e salva no array
     var txtAtividade = document.createTextNode(inputValue);
     var spanAtividade = document.createElement("span");  
     
     novaAtividade.appendChild(spanAtividade);
     spanAtividade.appendChild(txtAtividade);
     listaAtividades.appendChild(novaAtividade);
+
+    atividadesDaLista.push(inputValue);
     
     //cria a checkbox do item da lista
     var checkboxAtividade = document.createElement("input");
@@ -44,8 +47,10 @@ function adicionarAtividade(inputValue) {
     checkboxAtividade.title = "Marcar atividade como realizada";
 
     novaAtividade.appendChild(checkboxAtividade);
+
+    arrayStatus.push(novaAtividade.className);
     
-    //adiciona o botão de excluir ao itme da lista
+    //adiciona o botão de excluir ao item da lista
     var botaoExcluir = document.createElement("button");
     var txtExcluir = document.createTextNode("Excluir");    
     
@@ -53,8 +58,6 @@ function adicionarAtividade(inputValue) {
     botaoExcluir.appendChild(txtExcluir);
     novaAtividade.appendChild(botaoExcluir);
 
-    atividadesDaLista.push(inputValue);
-    
     //"reseta" o campo de input
     inputAtividade.value = "";
     inputAtividade.focus();
@@ -62,18 +65,22 @@ function adicionarAtividade(inputValue) {
     //notifica caso o input não tenha sido preenchido
     } else { 
         alert("Insira uma atividade!"); 
-    }
-    
+    }    
 }
 
-//função para salvar a lista no local storage
+//função para salvar as listas no local storage
 function salvarAtividades() {    
     localStorage.setItem("listaAtividades", JSON.stringify(atividadesDaLista));
+}
+
+function salvarStatus() {    
+    localStorage.setItem("listaStatusAtividades", JSON.stringify(arrayStatus));
 }
 
 //função para carregar a lista do local storage
 function carregarAtividades() {
     var listaSalva = JSON.parse(localStorage.getItem("listaAtividades"));
+    var listaSalvaStatus = JSON.parse(localStorage.getItem("listaStatusAtividades"));
 
         if(listaSalva){
         for (var i = 0; i < listaSalva.length; i++) {
@@ -82,20 +89,18 @@ function carregarAtividades() {
     }
 }
 
-//permite marcar atividades como realizadas na lista
-var lista = document.querySelector('ul');
-lista.addEventListener('click', function(e) {
-    if (e.target.tagName === 'INPUT') {
-        e.target.parentElement.classList.toggle('realizada');
-    }
-}, false);
- 
+//toogle no botão de atividades realizadas
+var checkboxToggle = document.querySelectorAll(".checkbox");
+
+checkboxToggle.forEach(function(btn) {  
+    btn.addEventListener('click', toggleStatusItem);    
+})
+
 //ativa o botão de excluir itens
 var excluir = document.querySelectorAll('.excluir');
 
 excluir.forEach(function(btn) {  
-    btn.addEventListener('click', excluirItem);    
-    salvarAtividades();
+    btn.addEventListener('click', excluirItem);
 })
 
 //função para excluir item do localStorage
@@ -105,12 +110,33 @@ function excluirItem() {
         var li = this.parentElement.firstChild;
         var liLimpo = li.textContent;
         
-        const index = atividadesDaLista.indexOf(liLimpo);
+        var index = atividadesDaLista.indexOf(liLimpo);
             if (index > -1) {
                 atividadesDaLista.splice(index, 1);
+                arrayStatus.splice(index, 1);
             }   
     }
     salvarAtividades();
-    window.location = window.location;   
+    salvarStatus();
+    window.location = window.location; 
+}
+
+//função para toogle do status do item no localStorage
+function toggleStatusItem() {
+    var status = this.parentElement;
+    var liStatus = this.parentElement.firstChild;
+    var liStatusLimpo = liStatus.textContent;        
+    var indexStatus = atividadesDaLista.indexOf(liStatusLimpo);
+
+    if (this.checked) {
+        status.classList.add('realizada');
+        status.classList.remove('pendente');
+        arrayStatus.splice(indexStatus, 1, 'realizada');
+    } else {
+        status.classList.add('pendente');
+        status.classList.remove('realizada');
+        arrayStatus.splice(indexStatus, 1, 'pendente');
+    }
+    salvarStatus();
 }
 
